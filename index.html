@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Web Game</title>
+        <!-- cdn -->
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <div class="cardHeader"><p id="activeGame">Mines</p>
+                </div>
+                <div class="cardBody" id="gameScreen">
+                </div>
+                <div class="cardFooter" id="gameControls">
+                        <span>
+                            <label for="balance">Balance:</label>
+                            <input
+                                type="number"
+                                id="balance"
+                                name="balance"
+                                value="1000" readonly>
+                        </span>
+                        <span>
+                            <label for="betAmount">Bet Amount:</label>
+                            <input
+                                    type="number"
+                                    id="betAmount"
+                                    name="betAmount"
+                                    value="10" min="10">
+                        </span>
+                        <span>
+                            <label for="mines">Mines:</label>
+                            <input
+                                    type="number"
+                                    id="mines"
+                                    name="mines"
+                                    value="5" 
+                                    min="3" 
+                                    max="24">
+                        </span>
+                        <span>
+                            <label for="winnings">Winnings:</label>
+                            <input
+                                    type="number"
+                                    id="winnings"
+                                    name="winnings"
+                                    value="0" readonly>
+                        </span>
+                        <button class="btn" id="placeBet" onclick="startGame()">Place Bet</button>
+                        <button class="btn" id="cashOut" onclick="cashOut()">Cash Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
