@@ -9,7 +9,7 @@ const tiles = document.querySelectorAll(".minesCard");
 
 let isPlaying = false;
 let tilesWithMines = [];
-let totalSafeT
+let totalSafeTiles = 0;
 let revealedSafeTiles = 0;
 let currentMultiplier = 0;
 let currentWinnings = 0;
@@ -101,6 +101,7 @@ function clickTile(tile, index) {
     bombed = true;
     gameOverReset();
   } else {
+    tile.disabled = true;
     tile.style.backgroundColor = "green";
     tile.innerText = "💎";
     revealedSafeTiles++;
@@ -109,6 +110,8 @@ function clickTile(tile, index) {
     winnings.value = currentWinnings;
 
     currentMultiplier += 0.25; // increase multiplier
+
+    if (revealedSafeTiles == totalSafeTiles) gameOverReset();
   }
 }
 
