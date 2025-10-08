@@ -137,8 +137,5 @@ mines.addEventListener("input", () => {
 betAmount.addEventListener("input", () => {
   if (Number(betAmount.value) > Number(balance.value)) {
     betAmount.value = balance.value;
-  } else if (Number(betAmount.value) < 10) {
-    const playBtn = document.getElementById("placeBet");
-    playBtn.disabled = true;
-  }
+  } 
 });
