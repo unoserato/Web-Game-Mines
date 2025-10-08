@@ -11,7 +11,7 @@ let isPlaying = false;
 let tilesWithMines = [];
 let totalSafeT
 let revealedSafeTiles = 0;
-let currentMultiplier = Number(mines.value) * 0.25;
+let currentMultiplier = 0;
 let currentWinnings = 0;
 let bombed = false;
 let bal, bet = 0;
@@ -23,7 +23,7 @@ function gameOverReset() {
   tilesWithMines = [];
   revealedSafeTiles = 0;
   totalSafeTiles = 0;
-  currentMultiplier = Number(mines.value) * 0.25;
+  currentMultiplier = 0;
   currentWinnings = 0;
   bombed = false;
 
@@ -46,10 +46,12 @@ function startGame() {
     tile.innerText = "";
   });
 
+  
   bet = Number(betAmount.value);
   bal = Number(balance.value);
   const mineCount = Number(numberOfMines.value);
-
+  currentMultiplier = mineCount * 0.25;
+  
   if (bet > bal) {
     alert("Not enough balance!");
     isPlaying = false;
