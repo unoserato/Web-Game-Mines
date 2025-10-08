@@ -14,7 +14,7 @@ let revealedSafeTiles = 0;
 let currentMultiplier = Number(mines.value) * 0.25;
 let currentWinnings = 0;
 let bombed = false;
-
+let bal, bet = 0;
 function gameOverReset() {
   if (!bombed) balance.value = Number(balance.value) + Number(currentWinnings);
   winnings.value = 0;
@@ -46,8 +46,8 @@ function startGame() {
     tile.innerText = "";
   });
 
-  const bet = Number(betAmount.value);
-  const bal = Number(balance.value);
+  bet = Number(betAmount.value);
+  bal = Number(balance.value);
   const mineCount = Number(numberOfMines.value);
 
   if (bet > bal) {
@@ -88,8 +88,6 @@ function startGame() {
 
 function clickTile(tile, index) {
   if (!isPlaying) return;
-
-  const bet = Number(betAmount.value);
 
   tile.style.transform = "rotateY(180deg)";
 
