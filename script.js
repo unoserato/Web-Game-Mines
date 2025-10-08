@@ -9,7 +9,7 @@ const tiles = document.querySelectorAll(".minesCard");
 
 let isPlaying = false;
 let tilesWithMines = [];
-let totalSafeTiles = 0;
+let totalSafeT
 let revealedSafeTiles = 0;
 let currentMultiplier = Number(mines.value) * 0.25;
 let currentWinnings = 0;
@@ -106,7 +106,7 @@ function clickTile(tile, index) {
     currentWinnings = Math.floor(bet * currentMultiplier);
     winnings.value = currentWinnings;
 
-    currentMultiplier *= 1.25; // increase multiplier
+    currentMultiplier += 0.25; // increase multiplier
   }
 }
 
