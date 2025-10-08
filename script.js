@@ -104,10 +104,11 @@ function clickTile(tile, index) {
     tile.style.backgroundColor = "green";
     tile.innerText = "💎";
     revealedSafeTiles++;
-    currentMultiplier *= 1.25; // increase multiplier
 
     currentWinnings = Math.floor(bet * currentMultiplier);
     winnings.value = currentWinnings;
+
+    currentMultiplier *= 1.25; // increase multiplier
   }
 }
 
