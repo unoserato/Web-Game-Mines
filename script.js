@@ -15,7 +15,7 @@ let baseMultiplier = 0;
 let currentMultiplier = 0;
 let currentWinnings = 0;
 let bombed = false;
-
+let bal, bet = 0;
 function gameOverReset() {
   if (!bombed) balance.value = Number(balance.value) + Number(currentWinnings);
   winnings.value = 0;
@@ -50,10 +50,12 @@ function startGame() {
     tile.style.backgroundColor = "#333333";
   });
 
-  const bet = Number(betAmount.value);
-  const bal = Number(balance.value);
+  
+  bet = Number(betAmount.value);
+  bal = Number(balance.value);
   const mineCount = Number(numberOfMines.value);
-
+  currentMultiplier = mineCount * 0.25;
+  
   if (bet > bal) {
     alert("Not enough balance!");
     isPlaying = false;
@@ -99,8 +101,6 @@ function startGame() {
 function clickTile(tile, index) {
   if (!isPlaying) return;
 
-  const bet = Number(betAmount.value);
-
   tile.style.transform = "rotateY(180deg)";
 
   if (tilesWithMines.includes(index)) {
@@ -110,6 +110,7 @@ function clickTile(tile, index) {
     bombed = true;
     gameOverReset();
   } else {
+    tile.disabled = true;
     tile.style.backgroundColor = "green";
     tile.innerText = "💎";
     revealedSafeTiles++;
@@ -147,11 +148,8 @@ numberOfMines.addEventListener("input", () => {
   if (numberOfMines.value > 24) numberOfMines.value = 24;
 });
 
-betAmount.addEventListener("input", () => {
-  if (Number(betAmount.value) > Number(balance.value)) {
-    betAmount.value = balance.value;
-  } else if (Number(betAmount.value) < 10) {
-    const playBtn = document.getElementById("placeBet");
-    playBtn.disabled = true;
-  }
-});
+//betAmount.addEventListener("input", () => {
+//  if (Number(betAmount.value) > Number(balance.value)) {
+//    betAmount.value = balance.value;
+//  } 
+//});
