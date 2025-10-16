@@ -1,157 +1,170 @@
-const gameScreen = document.getElementById("gameScreen");
-const balance = document.getElementById("balance");
-const betAmount = document.getElementById("betAmount");
-const winnings = document.getElementById("winnings");
-const numberOfMines = document.getElementById("mines");
+document.addEventListener("DOMContentLoaded", () => {
+  const gameScreen = document.getElementById("gameScreen");
+  const balance = document.getElementById("balance");
+  const betAmount = document.getElementById("betAmount");
+  const winnings = document.getElementById("winnings");
+  const numberOfMines = document.getElementById("mines");
 
-createTiles();
-const tiles = document.querySelectorAll(".minesCard");
+  const placeBetBtn = document.getElementById("placeBet");
+  const cashOutBtn = document.getElementById("cashOut");
 
-let isPlaying = false;
-let tilesWithMines = [];
-let totalSafeTiles = 0;
-let revealedSafeTiles = 0;
-let baseMultiplier = 0;
-let currentMultiplier = 0;
-let currentWinnings = 0;
-let bombed = false;
+  createTiles();
+  const tiles = document.querySelectorAll(".minesCard");
 
-function gameOverReset() {
-  if (!bombed) balance.value = Number(balance.value) + Number(currentWinnings);
-  winnings.value = 0;
+  let isPlaying = false;
+  let tilesWithMines = [];
+  let totalSafeTiles = 0;
+  let revealedSafeTiles = 0;
+  let baseMultiplier = 0;
+  let currentMultiplier = 0;
+  let currentWinnings = 0;
+  let bombed = false;
 
-  isPlaying = false;
-  tilesWithMines = [];
-  revealedSafeTiles = 0;
-  totalSafeTiles = 0;
-  baseMultiplier = Number(numberOfMines.value) * 0.25;
-  currentMultiplier = baseMultiplier; // this is the line that fixed the multiplier reset
-  currentWinnings = 0;
-  bombed = false;
+  function gameOverReset() {
+    // Add winnings to balance if player didn't hit a bomb
+    if (!bombed)
+      balance.value = Number(balance.value) + Number(currentWinnings);
+    winnings.value = 0;
 
-  betAmount.disabled = false;
-  numberOfMines.disabled = false;
-}
-
-function createTiles() {
-  gameScreen.innerHTML = Array(25)
-    .fill('<div class="minesCard"></div>')
-    .join("");
-}
-
-function startGame() {
-  if (isPlaying) return;
-  isPlaying = true;
-
-  // Reset tiles
-  tiles.forEach((tile) => {
-    tile.style.transform = "rotateY(0deg)";
-    tile.innerText = "";
-    tile.style.backgroundColor = "#333333";
-  });
-
-  const bet = Number(betAmount.value);
-  const bal = Number(balance.value);
-  const mineCount = Number(numberOfMines.value);
-
-  if (bet > bal) {
-    alert("Not enough balance!");
     isPlaying = false;
-    return;
+    tilesWithMines = [];
+    revealedSafeTiles = 0;
+    totalSafeTiles = 0;
+    baseMultiplier = Number(numberOfMines.value) * 0.25;
+    currentMultiplier = baseMultiplier; // this is the line that fixed the multiplier reset
+    currentWinnings = 0;
+    bombed = false;
+
+    betAmount.disabled = false;
+    numberOfMines.disabled = false;
   }
 
-  // Deduct balance
-  betAmount.disabled = true;
-  numberOfMines.disabled = true;
-  balance.value = bal - bet;
-
-  // Generate mines
-  tilesWithMines = [];
-  while (tilesWithMines.length < mineCount) {
-    let randomIndex = Math.floor(Math.random() * 25);
-    if (!tilesWithMines.includes(randomIndex)) tilesWithMines.push(randomIndex);
+  function createTiles() {
+    gameScreen.innerHTML = Array(25)
+      .fill('<div class="minesCard"></div>')
+      .join("");
   }
 
-  totalSafeTiles = 25 - tilesWithMines.length;
-  revealedSafeTiles = 0;
+  function startGame() {
+    if (isPlaying) return;
+    isPlaying = true;
 
-  // Reset multipliers
-  baseMultiplier = mineCount * 0.25;
-  currentMultiplier = baseMultiplier;
-  currentWinnings = 0;
-  winnings.value = currentWinnings;
+    // Reset tiles
+    tiles.forEach((tile) => {
+      tile.style.transform = "rotateY(0deg)";
+      tile.innerText = "";
+      tile.style.backgroundColor = "#333333";
+    });
 
-  // Add click events
-  tiles.forEach((tile, index) => {
-    tile.removeEventListener("click", tile._clickHandler); // remove old handler
-    tile._clickHandler = () => clickTile(tile, index); // store handler reference
-    tile.addEventListener("click", tile._clickHandler);
-  });
+    const bet = Number(betAmount.value);
+    const bal = Number(balance.value);
+    const mineCount = Number(numberOfMines.value);
 
-  // cheat: show safe tiles in console
-  let safeTiles = [];
-  tiles.forEach((tile, index) => {
-    if (!tilesWithMines.includes(index)) safeTiles.push(index);
-  });
-  console.log(safeTiles.map((i) => i + 1).sort((a, b) => a - b));
-}
+    if (bet > bal) {
+      alert("Not enough balance!");
+      isPlaying = false;
+      return;
+    }
 
-function clickTile(tile, index) {
-  if (!isPlaying) return;
+    // Deduct balance
+    betAmount.disabled = true;
+    numberOfMines.disabled = true;
+    balance.value = bal - bet;
 
-  const bet = Number(betAmount.value);
+    // Generate mines
+    tilesWithMines = [];
+    while (tilesWithMines.length < mineCount) {
+      let randomIndex = Math.floor(Math.random() * 25);
+      if (!tilesWithMines.includes(randomIndex))
+        tilesWithMines.push(randomIndex);
+    }
 
-  tile.style.transform = "rotateY(180deg)";
+    totalSafeTiles = 25 - tilesWithMines.length;
+    revealedSafeTiles = 0;
 
-  if (tilesWithMines.includes(index)) {
-    tile.style.backgroundColor = "red";
-    tile.innerText = "💣";
-    revealMines(tile, index);
-    bombed = true;
-    gameOverReset();
-  } else {
-    tile.style.backgroundColor = "green";
-    tile.innerText = "💎";
-    revealedSafeTiles++;
-
-    currentMultiplier = baseMultiplier * revealedSafeTiles * 0.75; // recalc multiplier
-    currentWinnings = Math.floor(bet * currentMultiplier);
+    // Reset multipliers
+    baseMultiplier = mineCount * 0.25;
+    currentMultiplier = baseMultiplier;
+    currentWinnings = 0;
     winnings.value = currentWinnings;
 
-    if (revealedSafeTiles === totalSafeTiles) {
+    // Add click events
+    tiles.forEach((tile, index) => {
+      tile.removeEventListener("click", tile._clickHandler); // remove old handler
+      tile._clickHandler = () => clickTile(tile, index); // store handler reference
+      tile.addEventListener("click", tile._clickHandler);
+    });
+
+    // cheat: show safe tiles in console
+    let safeTiles = [];
+    tiles.forEach((tile, index) => {
+      if (!tilesWithMines.includes(index)) safeTiles.push(index);
+    });
+    console.log(safeTiles.map((i) => i + 1).sort((a, b) => a - b));
+  }
+
+  function clickTile(tile, index) {
+    if (!isPlaying) return;
+
+    const bet = Number(betAmount.value);
+
+    tile.style.transform = "rotateY(180deg)";
+
+    if (tilesWithMines.includes(index)) {
+      tile.style.backgroundColor = "red";
+      tile.innerText = "💣";
+      revealMines(tile, index);
+      bombed = true;
+      gameOverReset();
+    } else {
+      tile.style.backgroundColor = "green";
+      tile.innerText = "💎";
+      revealedSafeTiles++;
+
+      currentMultiplier = baseMultiplier * revealedSafeTiles; // recalc multiplier
+      currentWinnings = Math.floor(bet * currentMultiplier);
+      winnings.value = currentWinnings;
+
+      if (revealedSafeTiles === totalSafeTiles) {
+        revealMines();
+        gameOverReset();
+      }
+    }
+  }
+
+  function revealMines() {
+    tiles.forEach((tile, index) => {
+      if (tilesWithMines.includes(index)) {
+        tile.style.transform = "rotateY(180deg)";
+        tile.style.backgroundColor = "red";
+        tile.innerText = "💣";
+      }
+    });
+  }
+
+  function cashOut() {
+    if (currentWinnings > 0) {
       revealMines();
       gameOverReset();
     }
   }
-}
 
-function revealMines() {
-  tiles.forEach((tile, index) => {
-    if (tilesWithMines.includes(index)) {
-      tile.style.transform = "rotateY(180deg)";
-      tile.style.backgroundColor = "red";
-      tile.innerText = "💣";
+  // ===== BUTTON EVENT LISTENERS =====
+  placeBetBtn.addEventListener("click", startGame);
+  cashOutBtn.addEventListener("click", cashOut);
+
+  // error handling
+  numberOfMines.addEventListener("input", () => {
+    if (numberOfMines.value > 24) numberOfMines.value = 24;
+  });
+
+  betAmount.addEventListener("input", () => {
+    if (Number(betAmount.value) > Number(balance.value)) {
+      betAmount.value = balance.value;
+    } else if (Number(betAmount.value) < 10) {
+      placeBetBtn.disabled = true;
+    } else {
+      placeBetBtn.disabled = false;
     }
   });
-}
-
-function cashOut() {
-  if (currentWinnings > 0) {
-    revealMines();
-    gameOverReset();
-  }
-}
-
-// error handling
-numberOfMines.addEventListener("input", () => {
-  if (numberOfMines.value > 24) numberOfMines.value = 24;
-});
-
-betAmount.addEventListener("input", () => {
-  if (Number(betAmount.value) > Number(balance.value)) {
-    betAmount.value = balance.value;
-  } else if (Number(betAmount.value) < 10) {
-    const playBtn = document.getElementById("placeBet");
-    playBtn.disabled = true;
-  }
 });
